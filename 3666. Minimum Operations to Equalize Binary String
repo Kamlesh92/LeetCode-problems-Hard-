@@ -1,0 +1,45 @@
+You are given a binary string s, and an integer k.
+
+In one operation, you must choose exactly k different indices and flip each '0' to '1' and each '1' to '0'.
+
+Return the minimum number of operations required to make all characters in the string equal to '1'. If it is not possible, return -1.
+
+
+
+PYTHON
+
+
+
+class Solution:
+    def minOperations(self, s: str, k: int) -> int:
+        zero = 0
+        slen = len(s)
+
+        for i in range(slen):
+            zero += ~ord(s[i]) & 1
+
+        if zero == 0:
+            return 0
+
+        if slen == k:
+            return 1 if zero == slen else -1
+
+        base = slen - k
+
+        odd = max(math.ceil(zero / k), math.ceil((slen - zero) / base))
+
+        odd += ~odd & 1
+
+        even = max(math.ceil(zero / k), math.ceil(zero / base))
+
+        even += even & 1
+
+        res = float('inf')
+
+        if (k & 1) == (zero & 1):
+            res = min(res, odd)
+
+        if (~zero & 1) == 1:
+            res = min(res, even)
+
+        return -1 if res == float('inf') else res
